@@ -4,22 +4,12 @@ import type { HTMLAttributes } from 'astro/types';
 type Props = HTMLAttributes<'a'>;
 
 const { href, class: className, ...props } = Astro.props;
-
-const { pathname } = Astro.url;
-// 获取当前路径的层级数
-const pathnameSegments = pathname.split('/').filter(segment => segment.length > 0);
-const hrefSegments = href.split('/').filter(segment => segment.length > 0);
-
-// 只在路径完全匹配或 href 是一级路径且 pathname 也是一级路径时标记为活跃
-const isExactMatch = href === pathname;
-const isFirstLevelMatch = hrefSegments.length === 1 && pathnameSegments.length === 1 && hrefSegments[0] === pathnameSegments[0];
-const isActive = isExactMatch || isFirstLevelMatch;
-
 ---
 
-<a href={href} class:list={[className, { active: isActive }]} {...props}>
+<a id={href} href={href} class={className} data-nav-link {...props}>
 	<slot />
 </a>
+
 <style>
 	a {
 		display: inline-block;
@@ -30,3 +20,33 @@ const isActive = isExactMatch || isFirstLevelMatch;
 		text-decoration: underline;
 	}
 </style>
+
+<script>
+	// Client-side script for debugging and path matching
+	document.addEventListener('DOMContentLoaded', () => {
+		if (typeof window !== 'undefined') {
+			const links = document.querySelectorAll('a[data-nav-link]');
+			const currentPath = window.location.pathname;
+
+			links.forEach(link => {
+				const href = link.getAttribute('href');
+
+				// Normalize the path for comparison
+				const normalizePath = (path) => path.replace(/\/+$/, '');
+
+				const isActive = normalizePath(href) === normalizePath(currentPath) ||
+					(currentPath.startsWith(href) && href !== '/');
+
+				console.log('Client-side href:', href);
+				console.log('Client-side currentPath:', currentPath);
+				console.log('Client-side isActive:', isActive);
+
+				if (isActive) {
+					link.classList.add('active');
+				} else {
+					link.classList.remove('active');
+				}
+			});
+		}
+	});
+</script>

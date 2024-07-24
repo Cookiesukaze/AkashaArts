@@ -19,18 +19,13 @@ export default defineConfig({
   //     behavior: 'append'
   //   }]]
   // },
-  site: 'http://cookiesukaze.cn/AkashaArts',
-  base: '/AkashaArts/',
+  site: 'https://akasha-arts.vercel.app/',
   build: {
     format: "file"
-  },
-  redirects: {
-    '/AkashaArts': '/AkashaArts/'
   },
   integrations: [ sitemap(), pagefind(),
     starlight({
      title: 'AkashaArts',
-
   }),mdx()
   ]
 });
