@@ -1,0 +1,167 @@
+---
+import { getCollection } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+import Search from "astro-pagefind/components/Search";
+import "@pagefind/default-ui/css/ui.css";
+
+// 获取所有博客文章
+const posts = await getCollection('blog');
+
+// 按发布时间排序博客文章
+posts.sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate));
+
+// 初始化查询和搜索结果
+let query = '';
+let results = posts;
+const serializedPosts = JSON.stringify(posts);
+---
+
+<div class="search-container">
+    <!-- Pagefind Search Component -->
+    <Search id="search-component" className="pagefind-ui" uiOptions={{ showImages: false }} />
+</div>
+
+<!-- 保留之前的布局 -->
+<div class="custom-search-results">
+    <ul class="search-results">
+        {posts.slice(0, 8).map(post => (
+                <li key={post.slug}>
+                    <a href={`/blog/${post.slug}/`}>
+                        <img width={800} height={360} src={post.data.heroImage} alt="" />
+                        <h4 class="title">{post.data.title}</h4>
+                        <p class="date">
+                            <FormattedDate date={post.data.pubDate} />
+                        </p>
+                        <p class="description">{post.data.description}</p>
+                    </a>
+                </li>
+            ))}
+            </ul>
+            </div>
+
+            <!-- 将 posts 数据传递到客户端 -->
+            <script type="application/json" id="posts-data">
+  {serializedPosts}
+</script>
+
+            <script type="module">
+                document.addEventListener('DOMContentLoaded', async () => {
+                    try {
+                        const postsRaw = document.getElementById('posts-data').textContent.trim();
+                        const posts = JSON.parse(postsRaw);
+
+                        function updateResults(results) {
+                            const resultsContainer = document.querySelector('.search-results');
+                            if (!resultsContainer) return;
+
+                            resultsContainer.innerHTML = results.slice(0, 8).map(result => `
+          <li>
+            <a href="${result.url}">
+              <img width="800" height="360" src="${result.meta.heroImage}" alt="" />
+              <h4 class="title">${result.meta.title}</h4>
+              <p class="date">${new Date(result.meta.pubDate).toLocaleDateString('en-us', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                            })}</p>
+              <p class="description">${result.excerpt.replaceAll('<mark', '<mark class="bg-blue-500 text-white"')}</p>
+            </a>
+          </li>
+        `).join('');
+                        }
+
+                        // 初始化搜索结果
+                        const searchInput = document.querySelector('#search-component input[type="text"]');
+                        searchInput.addEventListener('input', (event) => {
+                            const query = event.target.value;
+                            PagefindUI.search(query).then((search) => {
+                                const results = search.results.map((item) => item.data());
+                                Promise.all(results).then((data) => {
+                                    console.log('Search results:', data);  // 打印搜索结果
+                                    updateResults(data);
+                                });
+                            });
+                        });
+
+                        PagefindUI.search('').then((search) => {
+                            const results = search.results.map((item) => item.data());
+                            Promise.all(results).then((data) => {
+                                updateResults(data);
+                            });
+                        });
+                    } catch (error) {
+                        console.error('Failed to load Pagefind:', error);
+                    }
+                });
+                </script>
+
+            <style>
+                .search-container {
+                    margin-bottom: 2rem;
+                }
+                .custom-search-results {
+                    margin-bottom: 2rem;
+                    width: 100%;  /* 确保容器占满父级宽度 */
+                    max-width: 1200px;  /* 设置一个最大宽度 */
+                    margin: 0 auto;  /* 居中对齐 */
+                    padding: 0 1rem; /* 可选：增加一些内边距确保内容不紧贴边缘 */
+                }
+                .search-results {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 2rem; /* 调整间距 */
+                    list-style-type: none;
+                    margin: 0;
+                    padding: 0;
+                }
+                .search-results li {
+                    width: calc(25% - 2rem); /* 每行四个，保证每个项目占满宽度 */
+                    box-sizing: border-box; /* 确保 padding 和 border 不会影响宽度计算 */
+                }
+                .search-results li img {
+                    width: 100%;  /* 确保图片占满容器宽度 */
+                    margin-bottom: 0.5rem;
+                    border-radius: 12px;
+                }
+                .search-results li a {
+                    display: block;
+                    text-decoration: none;
+                }
+                .title {
+                    margin: 0;
+                    color: rgb(var(--black));
+                    line-height: 1;
+                    font-size: 1.5rem; /* 标题字体大小 */
+                }
+                .date {
+                    margin: 0;
+                    color: rgb(var(--gray));
+                    font-size: 1.1rem; /* 时间字体大小 */
+                }
+                .description {
+                    color: rgb(var(--gray-dark));
+                    font-size: 0.75rem; /* 描述字体大小 */
+                    margin: 0.5rem 0 0;
+                }
+                .search-results li a:hover h4,
+                .search-results li a:hover .date {
+                    color: rgb(var(--accent));
+                }
+                .search-results a:hover img {
+                    box-shadow: var(--box-shadow);
+                }
+                @media (max-width: 1200px) {
+                    .search-results li {
+                        flex: 1 1 calc(33.33% - 2rem); /* 中等屏幕每行三个 */
+                    }
+                }
+                @media (max-width: 800px) {
+                    .search-results {
+                        gap: 1rem; /* 调整间距 */
+                    }
+                    .search-results li {
+                        width: 100%; /* 小屏幕显示一个 */
+                        text-align: center;
+                    }
+                }
+            </style>
