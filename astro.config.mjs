@@ -19,7 +19,8 @@ export default defineConfig({
   //     behavior: 'append'
   //   }]]
   // },
-  site: 'https://example.com',
+  site: 'http://cookiesukaze.cn',
+  base:'/AkashaArts',
   build: {
     format: "file"
   },
