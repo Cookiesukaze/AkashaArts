@@ -26,7 +26,7 @@ const serializedPosts = JSON.stringify(posts);
     <ul class="search-results">
         {posts.slice(0, 8).map(post => (
                 <li key={post.slug}>
-                    <a href={`/blog/${post.slug}/`}>
+                    <a href={`/AkashaArts/blog/${post.slug}/`}>
                         <img width={800} height={360} src={post.data.heroImage} alt="" />
                         <h4 class="title">{post.data.title}</h4>
                         <p class="date">

@@ -20,6 +20,7 @@ export default defineConfig({
   //   }]]
   // },
   site: 'http://cookiesukaze.cn/AkashaArts',
+  base: '/AkashaArts/',
   build: {
     format: "file"
   },

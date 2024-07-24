@@ -6,8 +6,15 @@ type Props = HTMLAttributes<'a'>;
 const { href, class: className, ...props } = Astro.props;
 
 const { pathname } = Astro.url;
-const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + subpath?.[0];
+// 获取当前路径的层级数
+const pathnameSegments = pathname.split('/').filter(segment => segment.length > 0);
+const hrefSegments = href.split('/').filter(segment => segment.length > 0);
+
+// 只在路径完全匹配或 href 是一级路径且 pathname 也是一级路径时标记为活跃
+const isExactMatch = href === pathname;
+const isFirstLevelMatch = hrefSegments.length === 1 && pathnameSegments.length === 1 && hrefSegments[0] === pathnameSegments[0];
+const isActive = isExactMatch || isFirstLevelMatch;
+
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>

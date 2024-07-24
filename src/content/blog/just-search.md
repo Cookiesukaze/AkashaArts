@@ -2,7 +2,7 @@
 title: 'Just Search'
 description: 'Explore more by searching.'
 pubDate: 'Jul 24 2024'
-heroImage: '/blog-placeholder-5.jpg'
+heroImage: '/AkashaArts/blog-placeholder-5.jpg'
 ---
 
 如何使用AkashaArts
