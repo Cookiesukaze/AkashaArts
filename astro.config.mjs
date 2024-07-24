@@ -24,9 +24,13 @@ export default defineConfig({
   build: {
     format: "file"
   },
+  redirects: {
+    '/AkashaArts': '/AkashaArts/'
+  },
   integrations: [ sitemap(), pagefind(),
     starlight({
      title: 'AkashaArts',
+
   }),mdx()
   ]
 });
