@@ -77,11 +77,26 @@ strong,
 b {
 	font-weight: 700;
 }
+/*a {*/
+/*	color: var(--accent);*/
+/*}*/
+/*a:hover {*/
+/*	color: var(--accent);*/
+/*}*/
+/* 链接样式 */
 a {
-	color: var(--accent);
+	margin-left: 0.2rem;
+	margin-right: 0.2rem;
+	text-decoration: underline;
+	text-decoration-style: dashed;
+	text-underline-offset: 10px;
+	color: #6ea8e0;
+	transition: color 0.3s ease
 }
+
+/* 鼠标悬停时的链接样式 */
 a:hover {
-	color: var(--accent);
+	color: #6dc2ff;
 }
 p {
 	margin-bottom: 1em;

@@ -1,31 +1,35 @@
 ---
-title: 'Using MDX'
-description: 'Lorem ipsum dolor sit amet'
+title: '测试文章'
+description: '内容由gpt-4o提供'
 pubDate: 'Jul 02 2024'
 heroImage: '/blog-placeholder-5.jpg'
 ---
 
-This theme comes with the [@astrojs/mdx](https://docs.astro.build/en/guides/integrations-guide/mdx/) integration installed and configured in your `astro.config.mjs` config file. If you prefer not to use MDX, you can disable support by removing the integration from your config file.
+冒泡排序是一种简单且直观的排序算法。它通过重复遍历要排序的列表，依次比较相邻的元素并交换顺序不对的元素来达到排序的目的。
 
-## Why MDX?
+## 为什么选择冒泡排序？
 
-MDX is a special flavor of Markdown that supports embedded JavaScript & JSX syntax. This unlocks the ability to [mix JavaScript and UI Components into your Markdown content](https://docs.astro.build/en/guides/markdown-content/#mdx-features) for things like interactive charts or alerts.
+冒泡排序的基本思想是将最大的元素逐步“冒泡”到列表的末尾。虽然冒泡排序的时间复杂度较高（最坏和平均情况下是 O(n²)），但由于其实现简单，适合初学者学习和理解排序算法的基本概念。
 
-If you have existing content authored in MDX, this integration will hopefully make migrating to Astro a breeze.
+## 示例
 
-## Example
+下面是一个简单的冒泡排序的实现示例：
 
-Here is how you import and use a UI component inside of MDX.
-When you open this page in the browser, you should see the clickable button below.
+```js
+function bubbleSort(arr) {
+  let n = arr.length;
+  for (let i = 0; i < n - 1; i++) {
+    for (let j = 0; j < n - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // 交换相邻元素
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+      }
+    }
+  }
+  return arr;
+}
 
-import HeaderLink from '../../components/HeaderLink.astro';
-
-<HeaderLink href="#" onclick="alert('clicked!')">
-	Embedded component in MDX
-</HeaderLink>
-
-## More Links
-
-- [MDX Syntax Documentation](https://mdxjs.com/docs/what-is-mdx)
-- [Astro Usage Documentation](https://docs.astro.build/en/guides/markdown-content/#markdown-and-mdx-pages)
-- **Note:** [Client Directives](https://docs.astro.build/en/reference/directives-reference/#client-directives) are still required to create interactive components. Otherwise, all components in your MDX will render as static HTML (no JavaScript) by default.
+// 测试冒泡排序函数
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log('排序前:', array);
+console.log('排序后:', bubbleSort(array));
